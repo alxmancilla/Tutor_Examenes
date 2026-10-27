@@ -1,0 +1,26 @@
+[
+  [
+    "Pregunta",
+    "Saqué 8, 9 y 150 en los parciales. ¿Qué necesito en el final para terminar con 8?",
+    null,
+    false
+  ],
+  [
+    "Llamada a herramienta",
+    "{\n  \"herramienta\": \"calificacion_necesaria\",\n  \"argumentos\": {\n    \"parciales\": [\n      8,\n      9,\n      150\n    ],\n    \"meta\": 8\n  }\n}",
+    "El modelo solo PIDE la llamada; nuestro programa la ejecuta",
+    true
+  ],
+  [
+    "Resultado de la herramienta",
+    "No puedo calcularlo: las calificaciones deben estar entre 0 y 10. Revisa tus datos.",
+    "calificacion_necesaria",
+    false
+  ],
+  [
+    "Respuesta",
+    "No pude hacer el cálculo porque las calificaciones deben estar entre 0 y 10, y el 150 se sale de ese rango. A lo mejor quisiste poner 10, o 1.5, o esa calificación estaba en escala de 100 (150 tampoco cabría ahí). Revisa cuál fue tu tercera calificación y dímela para calcular cuánto necesitas en el final para terminar con 8.",
+    null,
+    false
+  ]
+]

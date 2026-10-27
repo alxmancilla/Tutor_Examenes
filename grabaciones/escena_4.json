@@ -1,0 +1,98 @@
+[
+  [
+    "Pregunta",
+    "Organiza mi semana de exámenes",
+    null,
+    false
+  ],
+  [
+    "Llamada a herramienta",
+    "{\n  \"herramienta\": \"ver_calendario\",\n  \"argumentos\": {}\n}",
+    "El modelo solo PIDE la llamada; nuestro programa la ejecuta",
+    true
+  ],
+  [
+    "Llamada a herramienta",
+    "{\n  \"herramienta\": \"buscar_apuntes\",\n  \"argumentos\": {\n    \"pregunta\": \"temas principales del examen\",\n    \"materia\": \"Biología\"\n  }\n}",
+    "El modelo solo PIDE la llamada; nuestro programa la ejecuta",
+    true
+  ],
+  [
+    "Llamada a herramienta",
+    "{\n  \"herramienta\": \"buscar_apuntes\",\n  \"argumentos\": {\n    \"pregunta\": \"temas principales del examen\",\n    \"materia\": \"Matemáticas\"\n  }\n}",
+    "El modelo solo PIDE la llamada; nuestro programa la ejecuta",
+    true
+  ],
+  [
+    "Llamada a herramienta",
+    "{\n  \"herramienta\": \"buscar_apuntes\",\n  \"argumentos\": {\n    \"pregunta\": \"temas principales del examen\",\n    \"materia\": \"Historia de México\"\n  }\n}",
+    "El modelo solo PIDE la llamada; nuestro programa la ejecuta",
+    true
+  ],
+  [
+    "Resultado de la herramienta",
+    "[\n  {\n    \"fecha\": \"2026-10-27\",\n    \"dia\": \"martes\",\n    \"materia\": \"Biología\",\n    \"temas\": [\n      \"célula\",\n      \"fotosíntesis\",\n      \"ADN\"\n    ]\n  },\n  {\n    \"fecha\": \"2026-10-29\",\n    \"dia\": \"jueves\",\n    \"materia\": \"Matemáticas\",\n    \"temas\": [\n      \"funciones\",\n      \"ecuaciones cuadráticas\"\n    ]\n  },\n  {\n    \"fecha\": \"2026-10-30\",\n    \"dia\": \"viernes\",\n    \"materia\": \"Historia de México\",\n    \"temas\": [\n      \"Independencia\",\n      \"Revolución\"\n    ]\n  }\n]",
+    "ver_calendario",
+    false
+  ],
+  [
+    "Fragmentos encontrados",
+    "1. En el ADN la adenina siempre se une con la timina y la citosina con la guanina. Un gen es un fragmento de ADN que contiene las instrucciones para fabricar una proteína.\n   Fuente: Apuntes de Biología, unidad 3\n   Similitud: 0.593  |  Relevancia (rerank): 0.481\n\n2. El ADN guarda la información genética de los seres vivos. Tiene forma de doble hélice, descrita por Watson y Crick en 1953. Sus bases son adenina, timina, citosina y guanina.\n   Fuente: Apuntes de Biología, unidad 3\n   Similitud: 0.592  |  Relevancia (rerank): 0.476\n\n3. La mitocondria produce energía para la célula en forma de ATP. Por eso se le llama la central energética de la célula. Las células musculares tienen muchas mitocondrias.\n   Fuente: Apuntes de Biología, unidad 1\n   Similitud: 0.543  |  Relevancia (rerank): 0.458",
+    "buscar_apuntes",
+    false
+  ],
+  [
+    "Fragmentos encontrados",
+    "1. La Independencia de México inició el 16 de septiembre de 1810 con el Grito de Dolores, encabezado por el cura Miguel Hidalgo. Buscaba terminar con el dominio español.\n   Fuente: Apuntes de Historia, unidad 1\n   Similitud: 0.539  |  Relevancia (rerank): 0.45\n\n2. Emiliano Zapata luchó por la tierra con el lema Tierra y libertad, y Francisco Villa encabezó la División del Norte. La Constitución de 1917 es uno de los resultados de la Revolución.\n   Fuente: Apuntes de Historia, unidad 2\n   Similitud: 0.588  |  Relevancia (rerank): 0.445\n\n3. La Revolución Mexicana comenzó el 20 de noviembre de 1910, convocada por Francisco I. Madero contra la dictadura de Porfirio Díaz. Su lema fue Sufragio efectivo, no reelección.\n   Fuente: Apuntes de Historia, unidad 2\n   Similitud: 0.554  |  Relevancia (rerank): 0.441",
+    "buscar_apuntes",
+    false
+  ],
+  [
+    "Fragmentos encontrados",
+    "1. Una ecuación cuadrática tiene la forma ax² + bx + c = 0, con a distinto de cero. Su gráfica es una parábola. Puede tener dos, una o ninguna solución real.\n   Fuente: Apuntes de Matemáticas, unidad 2\n   Similitud: 0.558  |  Relevancia (rerank): 0.451\n\n2. La fórmula general es x = (-b ± √(b² - 4ac)) / 2a. El discriminante b² - 4ac indica cuántas soluciones hay: positivo, dos; cero, una; negativo, ninguna real.\n   Fuente: Apuntes de Matemáticas, unidad 2\n   Similitud: 0.561  |  Relevancia (rerank): 0.414\n\n3. La función lineal tiene la forma y = mx + b. La pendiente m indica qué tan inclinada está la recta y b es el punto donde cruza el eje y.\n   Fuente: Apuntes de Matemáticas, unidad 1\n   Similitud: 0.561  |  Relevancia (rerank): 0.41",
+    "buscar_apuntes",
+    false
+  ],
+  [
+    "Llamada a herramienta",
+    "{\n  \"herramienta\": \"buscar_apuntes\",\n  \"argumentos\": {\n    \"pregunta\": \"fotosíntesis\",\n    \"materia\": \"Biología\"\n  }\n}",
+    "El modelo solo PIDE la llamada; nuestro programa la ejecuta",
+    true
+  ],
+  [
+    "Fragmentos encontrados",
+    "1. La fotosíntesis es el proceso con el que las plantas convierten luz solar, agua y dióxido de carbono en glucosa y oxígeno. Ocurre en los cloroplastos, gracias a la clorofila.\n   Fuente: Apuntes de Biología, unidad 2\n   Similitud: 0.824  |  Relevancia (rerank): 0.932\n\n2. La fotosíntesis tiene dos fases. En la fase luminosa se usa la luz para producir ATP y liberar oxígeno. En la fase oscura, o ciclo de Calvin, se fija el CO2 para formar glucosa.\n   Fuente: Apuntes de Biología, unidad 2\n   Similitud: 0.812  |  Relevancia (rerank): 0.895\n\n3. Las células procariotas no tienen núcleo definido, como las bacterias. Las células eucariotas sí tienen núcleo y organelos, como las de plantas y animales.\n   Fuente: Apuntes de Biología, unidad 1\n   Similitud: 0.608  |  Relevancia (rerank): 0.338",
+    "buscar_apuntes",
+    false
+  ],
+  [
+    "Llamada a herramienta",
+    "{\n  \"herramienta\": \"guardar_plan\",\n  \"argumentos\": {\n    \"plan\": \"Lunes 26: Biología (célula, fotosíntesis, ADN). Mitocondria produce ATP; fotosíntesis en cloroplastos: luz, agua y CO2 a glucosa y oxígeno; ADN: A-T y C-G. Examen martes 27.\\nMiércoles 28: Matemáticas (funciones, cuadráticas). y = mx + b; discriminante b²-4ac indica número de soluciones. Examen jueves 29.\\nJueves 29 tarde: Historia (Independencia, Revolución). Grito de Dolores 16/sep/1810; Revolución 20/nov/1910 con Madero. Examen viernes 30.\"\n  }\n}",
+    "El modelo solo PIDE la llamada; nuestro programa la ejecuta",
+    true
+  ],
+  [
+    "Aprobación humana",
+    "Lunes 26: Biología (célula, fotosíntesis, ADN). Mitocondria produce ATP; fotosíntesis en cloroplastos: luz, agua y CO2 a glucosa y oxígeno; ADN: A-T y C-G. Examen martes 27.\nMiércoles 28: Matemáticas (funciones, cuadráticas). y = mx + b; discriminante b²-4ac indica número de soluciones. Examen jueves 29.\nJueves 29 tarde: Historia (Independencia, Revolución). Grito de Dolores 16/sep/1810; Revolución 20/nov/1910 con Madero. Examen viernes 30.",
+    "guardar_plan espera tu permiso",
+    false
+  ],
+  [
+    "Aprobación humana",
+    "s",
+    "respuesta del estudiante",
+    false
+  ],
+  [
+    "Resultado de la herramienta",
+    "Plan guardado.",
+    "guardar_plan",
+    false
+  ],
+  [
+    "Respuesta",
+    "Este es tu plan para la semana y ya quedó guardado:\nLunes 26: repasa Biología para el examen del martes 27. La mitocondria produce ATP (Apuntes de Biología, unidad 1). La fotosíntesis pasa en los cloroplastos y convierte luz, agua y CO2 en glucosa y oxígeno (unidad 2). En el ADN, la A se une con la T y la C con la G (unidad 3).\nMiércoles 28: estudia Matemáticas para el jueves 29. La función lineal es y = mx + b (unidad 1). El discriminante b²-4ac te dice cuántas soluciones tiene una cuadrática (unidad 2).\nJueves 29 en la tarde: repasa Historia para el viernes 30. El Grito de Dolores fue el 16 de septiembre de 1810 (Apuntes de Historia, unidad 1). La Revolución empezó el 20 de noviembre de 1910, convocada por Madero (unidad 2).",
+    null,
+    false
+  ]
+]

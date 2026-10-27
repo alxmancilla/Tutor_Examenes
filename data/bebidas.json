@@ -1,0 +1,12 @@
+[
+  {"nombre": "agua de tamarindo",
+   "descripcion": "Agua fresca de tamarindo, agridulce y poco dulce. Bien fría refresca y no empalaga, ideal para acompañar largas horas de estudio."},
+  {"nombre": "agua de jamaica",
+   "descripcion": "Agua de flor de jamaica, de color rojo intenso y sabor muy dulce. Típica para acompañar la comida en fiestas y reuniones familiares."},
+  {"nombre": "horchata",
+   "descripcion": "Bebida de arroz con canela, cremosa y muy dulce. Se toma como postre después de unos tacos."},
+  {"nombre": "limonada",
+   "descripcion": "Limonada ácida con mucho hielo, para quitar la sed después de hacer deporte en un día de calor."},
+  {"nombre": "té",
+   "descripcion": "Té caliente de manzanilla, relajante, para tomar en una noche fría antes de dormir."}
+]

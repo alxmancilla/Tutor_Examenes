@@ -1,0 +1,5 @@
+[
+  {"fecha": "2026-10-27", "dia": "martes", "materia": "Biología", "temas": ["célula", "fotosíntesis", "ADN"]},
+  {"fecha": "2026-10-29", "dia": "jueves", "materia": "Matemáticas", "temas": ["funciones", "ecuaciones cuadráticas"]},
+  {"fecha": "2026-10-30", "dia": "viernes", "materia": "Historia de México", "temas": ["Independencia", "Revolución"]}
+]

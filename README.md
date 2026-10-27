@@ -1,0 +1,141 @@
+# Tutor de exámenes
+
+Agente de IA de demostración que ayuda a un estudiante de prepa a organizar su semana de exámenes.
+Usa Claude Opus 5.5 (vía AI Gateway), LangChain y MongoDB Atlas Vector Search.
+Atlas calcula los embeddings por su cuenta (Automated Embedding, modelo `voyage-4`) y reordena
+los resultados con Native Reranking (`$rerank`, modelo `rerank-2.5`), así que no hace falta llave de Voyage AI.
+
+Ambas funciones están en Preview. Requisitos del clúster:
+
+- MongoDB 8.3 o más reciente (versión "Latest" con actualizaciones automáticas).
+- Native Reranking activado en **Project Settings** de Atlas.
+- En clústeres dedicados (M10 o mayor), storage auto-scaling activado.
+
+## 1. Instalación
+
+Requiere Python 3.12 o más reciente.
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env   # y llena las llaves
+```
+
+## 2. Cuenta de Atlas y llaves
+
+1. Entra a https://cloud.mongodb.com y crea un clúster con MongoDB 8.3 o más reciente.
+2. En **Project Settings** activa Native Reranking.
+3. En **Database Access** crea un usuario con contraseña.
+4. En **Network Access** agrega tu IP (o la red del lugar de la plática).
+5. En **Connect > Drivers** copia la cadena `mongodb+srv://...` y ponla en `MONGODB_URI`.
+6. Llave del AI Gateway: ponla en `AI_GATEWAY_API_KEY`. `ANTHROPIC_BASE_URL` ya viene configurada.
+
+## 3. Cargar los datos
+
+```bash
+python seed.py
+```
+
+Borra y vuelve a crear la base `tutor_demo` (apuntes, calendario, reglas, bebidas, planes),
+inserta solo texto, crea los índices `autoEmbed` y espera a que Atlas termine de calcular
+los embeddings y las búsquedas funcionen. Se puede correr varias veces.
+
+En pantalla, cada fragmento muestra dos números: **Similitud** (qué tan cerca está en
+`$vectorSearch`) y **Relevancia** (la calificación del reranker, que decide el orden final).
+
+## 4. Revisión previa
+
+```bash
+python agent.py --revisar
+```
+
+Muestra OK o ERROR para las variables de entorno, Atlas, una búsqueda real con rerank en
+cada colección y Anthropic.
+
+## 5. Interfaz web (recomendada para la plática)
+
+```bash
+python web.py            # abre http://localhost:8000 en el navegador
+```
+
+- **Escenas:** un botón por escena. Cada paso aparece como una tarjeta grande de color.
+- **Todo es en vivo:** cada escena llama al modelo y a Atlas en ese momento.
+- **Interruptor VALIDAR:** muestra el código de `calificacion_necesaria` y prende o apaga la
+  validación al momento, sin editar archivos.
+- **Aprobación:** en la escena 4 el agente se detiene y aparecen los botones "Sí, guardar" y "No".
+- **Pregunta libre** y **Revisión previa** (la misma de `--revisar`).
+- **Modo presentación (`P`):** oculta el panel de controles, usa un tema claro de alto contraste y
+  letra más grande para el proyector. `Esc` regresa a la vista normal.
+- La escena que corre queda resaltada. La página no se desplaza sola: usa la rueda o las flechas.
+- **Aprobación:** en la escena 4 se abre una ventana al centro con el plan y los botones.
+- En las escenas 2 y 3 aparece una tarjeta con el código de `calificacion_necesaria` y el valor de VALIDAR.
+- Las llamadas y búsquedas seguidas se juntan en una tarjeta con "Ver todo".
+- **Teclas:** `1` a `6` corren las escenas, `V` prende o apaga VALIDAR, `S` / `N` aprueban o rechazan,
+  `P` modo presentación.
+- **Si algo falla**, la tarjeta de error pide revisar la conexión; vuelve a presionar la escena.
+- **Si recargas la página** a mitad de una escena, la página la retoma.
+- La escena 3 prende VALIDAR solo mientras corre y al terminar lo deja como estaba.
+- **Memoria en MongoDB:** la conversación del agente se guarda en Atlas, en `tutor_demo.checkpoints`
+  y `tutor_demo.checkpoint_writes` (con `MongoDBSaver` de `langgraph-checkpoint-mongodb`).
+  - La **escena 7** hace dos preguntas seguidas ("Me cuesta mucho Matemáticas." y "Organiza mi semana")
+    y el plan le da más tiempo a Matemáticas. Una tarjeta "Memoria" muestra lo que el agente recordó.
+  - Las escenas 1 a 6 siempre empiezan una conversación nueva.
+  - La **pregunta libre** recuerda lo anterior hasta presionar **Nueva conversación**.
+  - **Ver memoria en Atlas** muestra cuántos documentos hay guardados y qué dijo el estudiante.
+  - Atlas borra sola la memoria 24 horas después de guardarla (índice TTL sobre `created_at`).
+    Para cambiar el tiempo, edita `MEMORIA_HORAS` en `agent.py` y corre `python seed.py`.
+  - `python seed.py` borra toda la memoria guardada al momento.
+- **Vista sencilla:** cada tarjeta trae una frase en español sencillo y oculta el JSON y los
+  números de similitud. Activa **Ver detalles técnicos** para mostrar los datos completos.
+
+Solo escucha en tu computadora (`127.0.0.1`). Usa `--puerto 8080` si el 8000 está ocupado.
+
+### Guion de 3 a 5 minutos
+
+1. Escena 2 con VALIDAR apagado: la herramienta responde -63.50.
+2. Prende VALIDAR y corre la escena 2 otra vez: rechaza el 150.
+3. Escena 4: el agente arma el plan y espera tu permiso. Presiona "Sí, guardar" o "No".
+4. Si sobra tiempo: escena 6 (agua de tamarindo) o escena 5 (no tiene esa información).
+
+## 6. Escenas en la terminal
+
+| Comando | Qué muestra |
+|---|---|
+| `python agent.py --escena 1` | Calendario + apuntes con cita de la fuente |
+| `python agent.py --escena 2` | Calificación 150: la herramienta da un resultado absurdo |
+| `python agent.py --escena 3` | Misma pregunta con `VALIDAR = True`: rechaza el 150 |
+| `python agent.py --escena 4` | Plan de la semana y aprobación humana antes de guardar |
+| `python agent.py --escena 5` | Pregunta fuera de sus fuentes: dice que no tiene la información |
+| `python agent.py --escena 6` | Búsqueda semántica: recomienda agua de tamarindo |
+| `python agent.py` | Modo interactivo (escribe `salir` para terminar) |
+
+La escena 3 activa la validación por sí sola. Para mostrarlo en vivo, cambia
+`VALIDAR = False` a `VALIDAR = True` en `herramientas.py` y corre la escena 2 otra vez.
+
+## 7. Grabar y reproducir (respaldo sin internet)
+
+Atlas consulta a Voyage AI en cada búsqueda, así que sin red solo funciona la reproducción.
+
+```bash
+python agent.py --escena 1 --grabar     # guarda grabaciones/escena_1.json
+python agent.py --reproducir 1          # repite la traza sin llamadas a la red
+```
+
+## 8. Pruebas
+
+```bash
+pytest -q
+```
+
+## Lista de ensayo para la plática
+
+- [ ] `python web.py` corriendo y el navegador en pantalla completa, con zoom al 125% o más.
+- [ ] "Revisión previa" en la página muestra todo en OK con la red del lugar.
+- [ ] La IP del lugar está permitida en Network Access de Atlas.
+- [ ] `python seed.py` corrido el mismo día (deja la colección `planes` vacía).
+- [ ] Interruptor VALIDAR apagado antes de empezar.
+- [ ] Escenas 2, 4 y 6 corridas una vez en la página con la red del lugar.
+- [ ] En la escena 4, presionar "Sí, guardar" (o "No" para mostrar que no se guarda).
+- [ ] Archivo `.env` cerrado antes de compartir pantalla.
+- [ ] Plan B: si falla la red, en la terminal `python agent.py --reproducir N` sigue disponible.

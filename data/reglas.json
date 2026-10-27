@@ -1,0 +1,4 @@
+[
+  {"escala_min": 0, "escala_max": 10, "aprobatoria": 6, "peso_parciales": 0.6, "peso_final": 0.4,
+   "descripcion": "Escala de 0 a 10. Se aprueba con 6. Calificación final = 60% promedio de parciales + 40% examen final."}
+]

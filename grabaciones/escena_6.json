@@ -1,0 +1,26 @@
+[
+  [
+    "Pregunta",
+    "¿Me recomiendas una bebida para estudiar?",
+    null,
+    false
+  ],
+  [
+    "Llamada a herramienta",
+    "{\n  \"herramienta\": \"recomendar_bebida\",\n  \"argumentos\": {\n    \"gusto\": \"algo para estudiar\"\n  }\n}",
+    "El modelo solo PIDE la llamada; nuestro programa la ejecuta",
+    true
+  ],
+  [
+    "Fragmentos encontrados",
+    "1. Agua fresca de tamarindo, agridulce y poco dulce. Bien fría refresca y no empalaga, ideal para acompañar largas horas de estudio.\n   Fuente: agua de tamarindo\n   Similitud: 0.643  |  Relevancia (rerank): 0.636\n\n2. Té caliente de manzanilla, relajante, para tomar en una noche fría antes de dormir.\n   Fuente: té\n   Similitud: 0.581  |  Relevancia (rerank): 0.291\n\n3. Agua de flor de jamaica, de color rojo intenso y sabor muy dulce. Típica para acompañar la comida en fiestas y reuniones familiares.\n   Fuente: agua de jamaica\n   Similitud: 0.563  |  Relevancia (rerank): 0.276",
+    "recomendar_bebida",
+    false
+  ],
+  [
+    "Respuesta",
+    "Te recomiendo un agua fresca de tamarindo bien fría. Es agridulce, no muy dulce, refresca y no empalaga, así que va bien para estudiar muchas horas (agua de tamarindo).\nEl té de manzanilla no te lo recomiendo para estudiar porque es relajante y se toma antes de dormir (té).\n¿Quieres que te ayude a organizar tu semana de exámenes?",
+    null,
+    false
+  ]
+]

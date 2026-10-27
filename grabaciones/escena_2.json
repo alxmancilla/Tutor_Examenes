@@ -1,0 +1,26 @@
+[
+  [
+    "Pregunta",
+    "Saqué 8, 9 y 150 en los parciales. ¿Qué necesito en el final para terminar con 8?",
+    null,
+    false
+  ],
+  [
+    "Llamada a herramienta",
+    "{\n  \"herramienta\": \"calificacion_necesaria\",\n  \"argumentos\": {\n    \"parciales\": [\n      8,\n      9,\n      150\n    ],\n    \"meta\": 8\n  }\n}",
+    "El modelo solo PIDE la llamada; nuestro programa la ejecuta",
+    true
+  ],
+  [
+    "Resultado de la herramienta",
+    "Promedio de parciales: 55.67. Necesitas -63.50 en el examen final.",
+    "calificacion_necesaria",
+    false
+  ],
+  [
+    "Respuesta",
+    "La herramienta me dio este resultado: tu promedio de parciales sería 55.67 y necesitarías -63.50 en el final.\nEse resultado no tiene sentido, porque la escala va de 0 a 10 y el 150 está fuera de ese rango, aunque la herramienta no lo marcó como error.\n¿El 150 fue un error al escribir? Por ejemplo, ¿era 10 o 5.0? Dime cuál fue la calificación real y lo vuelvo a calcular.",
+    null,
+    false
+  ]
+]

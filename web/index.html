@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<title>Tutor de exámenes</title>
+<style>
+  /* Estilo basado en LeafyGreen, el sistema de diseño público de MongoDB.
+     Las fuentes de MongoDB tienen licencia: se usan solo si están instaladas, si no, Helvetica/Arial. */
+  :root {
+    --sans:'Euclid Circular A','Helvetica Neue',Helvetica,Arial,sans-serif;
+    --serif:'MongoDB Value Serif','Times New Roman',serif;
+    --mono:'Source Code Pro',Menlo,monospace;
+    --verde:#00ED64; --verde-oscuro:#00684A; --verde-claro:#C0FAE6;
+    --azul:#0498EC; --amarillo:#FFC010; --morado:#B45AF2; --rojo:#FF6960; --rojo-base:#DB3030;
+    --fondo:#001E2B; --tarjeta:#112733; --texto:#F9FBFA; --tenue:#C1C7C6; --cabecera:#001E2B;
+    --leyenda:#C0FAE6; --codigo:#1C2D38; --resaltado:#023430; --borde:#3D4F58; --acento:var(--verde);
+  }
+  /* Modo presentación: versión clara de LeafyGreen, alto contraste y letra grande para el proyector */
+  body.presentacion { --fondo:#FFFFFF; --tarjeta:#F9FBFA; --texto:#001E2B; --tenue:#3D4F58; --cabecera:#FFFFFF;
+    --leyenda:#00684A; --codigo:#F9FBFA; --resaltado:#C0FAE6; --borde:#E8EDEB; --acento:var(--verde-oscuro);
+    --azul:#016BF8; --amarillo:#944F01; --morado:#5E0C9E; --rojo:#DB3030; font-size:26px; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--fondo); color:var(--texto); font:20px/1.5 var(--sans); }
+  header { padding:18px 32px; background:var(--cabecera); display:flex; gap:24px; align-items:center; flex-wrap:wrap;
+    border-bottom:4px solid var(--acento); }
+  header h1, .overlay h2 { font-family:var(--serif); font-weight:400; }
+  header h1 { margin:0; font-size:34px; }
+  .presentacion aside { display:none; }
+  .presentacion main { grid-template-columns:1fr; max-width:1400px; margin:0 auto; }
+  .presentacion header h1 { font-size:44px; } .presentacion .dato { font-size:22px; }
+  .presentacion .panel h3 { font-size:30px; } .presentacion .panel .leyenda { font-size:24px; }
+  .presentacion .Respuesta pre { font-size:34px; }
+  #salirPresentacion { display:none; position:fixed; right:16px; bottom:16px; opacity:.35; font:inherit; font-size:16px;
+    padding:8px 14px; border-radius:6px; border:1px solid var(--borde); background:var(--tarjeta); color:var(--texto); cursor:pointer; }
+  .presentacion #salirPresentacion { display:block; } #salirPresentacion:hover { opacity:1; }
+  .dato { color:var(--tenue); font-size:17px; }
+  .dato b { color:var(--texto); font-weight:600; }
+  main { display:grid; grid-template-columns:340px 1fr; gap:28px; padding:28px 32px; }
+  aside button, .entrada button { width:100%; text-align:left; margin:0 0 10px; padding:12px 16px; font:inherit;
+    font-size:18px; color:var(--texto); background:var(--tarjeta); border:1px solid var(--borde); border-radius:6px;
+    cursor:pointer; transition:box-shadow .15s, border-color .15s; }
+  aside button:hover { border-color:var(--acento); box-shadow:0 0 0 3px var(--resaltado); }
+  aside button:focus-visible, .botones button:focus-visible { outline:none; box-shadow:0 0 0 2px var(--fondo), 0 0 0 4px var(--azul); }
+  aside button:disabled { opacity:.45; cursor:default; box-shadow:none; }
+  aside button.activa { opacity:1; border-color:var(--acento); box-shadow:0 0 0 3px var(--resaltado); }
+  #enviar { background:var(--verde-oscuro); border-color:var(--verde); color:#FFFFFF; text-align:center; font-weight:600; }
+  aside h2 { font-size:13px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--tenue); margin:22px 0 8px; }
+  .interruptor { display:flex; align-items:center; gap:12px; font-size:19px; margin:4px 0 10px; cursor:pointer; }
+  .interruptor input { width:26px; height:26px; accent-color:var(--verde-oscuro); }
+  pre.codigo { background:var(--codigo); padding:12px; border-radius:6px; border:1px solid var(--borde);
+    font:16px/1.45 var(--mono); overflow:auto; margin:0 0 10px; }
+  pre.codigo .resaltado { background:var(--resaltado); display:block; }
+  .panel pre.codigo { font:24px/1.45 var(--mono); }
+  textarea { width:100%; font:inherit; font-size:18px; padding:10px 12px; border-radius:6px; background:var(--tarjeta);
+    color:var(--texto); border:1px solid var(--borde); min-height:80px; }
+  textarea:focus { outline:none; border-color:var(--azul); box-shadow:0 0 0 3px #0498EC55; }
+  #traza { display:flex; flex-direction:column; gap:16px; }
+  .panel { background:var(--tarjeta); border:1px solid var(--borde); border-left:8px solid; border-radius:16px;
+    padding:18px 24px; box-shadow:0 4px 10px -4px #00000040; }
+  .panel.nuevo { animation:aparece .3s; }
+  .panel h3 { margin:0 0 8px; font-size:24px; font-weight:600; display:flex; align-items:center; gap:12px; }
+  .paso { display:inline-grid; place-items:center; min-width:1.6em; height:1.6em; border-radius:999px;
+    background:var(--verde-oscuro); color:#FFFFFF; font-size:.75em; border:2px solid var(--verde); }
+  .panel .sub { color:var(--tenue); font-size:16px; margin-top:8px; font-style:italic; }
+  .panel .leyenda { color:var(--leyenda); font-size:20px; margin:-4px 0 10px; }
+  .panel details { margin-top:10px; } .panel summary { cursor:pointer; color:var(--azul); font-weight:600; }
+  .Respuesta { padding:28px 32px; border-left-width:12px; } .Respuesta pre { font-size:26px; line-height:1.45; }
+  .overlay { position:fixed; inset:0; background:#001E2BCC; display:grid; place-items:center; z-index:10; animation:aparece .3s; }
+  .overlay .caja { background:var(--fondo); color:var(--texto); border:1px solid var(--borde); border-top:8px solid var(--rojo);
+    border-radius:24px; padding:32px 40px; width:min(900px, 92vw); max-height:88vh; overflow:auto; box-shadow:0 18px 40px #00000066; }
+  .overlay h2 { margin:0 0 6px; font-size:40px; } .overlay p { margin:0 0 14px; font-size:24px; color:var(--leyenda); }
+  .overlay pre { white-space:pre-wrap; font:inherit; font-size:22px; background:var(--tarjeta); padding:16px;
+    border-radius:12px; border:1px solid var(--borde); }
+  .overlay .botones button { font-size:28px; padding:14px 36px; }
+  .panel pre { margin:0; white-space:pre-wrap; font:inherit; }
+  .panel pre.json { font:18px/1.4 var(--mono); }
+  .Pregunta { border-left-color:var(--azul); } .Fragmentos { border-left-color:var(--morado); }
+  .Llamada { border-left-color:var(--amarillo); } .Resultado { border-left-color:var(--tenue); }
+  .Aprobacion, .Error { border-left-color:var(--rojo); } .Respuesta { border-left-color:var(--acento); }
+  .Error button { margin-top:12px; font:inherit; font-size:20px; padding:10px 24px; border-radius:6px; cursor:pointer; }
+  .Pensando { border-left-color:var(--borde); color:var(--tenue); }
+  .Codigo { border-left-color:var(--amarillo); }
+  .Memoria { border-left-color:var(--verde-claro); }
+  .puntos { display:inline-block; animation:latido 1s infinite; }
+  @keyframes latido { 50% { opacity:.2; } }
+  .teclas { color:var(--tenue); font-size:14px; margin-top:16px; }
+  .botones { display:flex; gap:12px; margin-top:12px; }
+  .botones button { font:inherit; font-size:20px; font-weight:600; padding:10px 24px; border-radius:6px; cursor:pointer; }
+  .si { background:var(--verde-oscuro); color:#FFFFFF; border:1px solid var(--verde); }
+  .si:hover { background:#00593F; box-shadow:0 0 0 3px var(--verde-claro); }
+  .no { background:var(--rojo-base); color:#FFFFFF; border:1px solid var(--rojo-base); }
+  .no:hover { background:#C82222; box-shadow:0 0 0 3px #FFEAE5; }
+  #estado { color:var(--leyenda); font-size:18px; min-height:28px; }
+  .tabla td { padding:4px 14px 4px 0; }
+  .ok { color:var(--acento); font-weight:600; } .falla { color:var(--rojo); font-weight:600; }
+  @keyframes aparece { from { opacity:0; transform:translateY(8px); } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Tutor de exámenes</h1>
+  <span class="dato">Modelo: <b id="modelo">...</b></span>
+  <span class="dato">Límite de pasos: <b id="limite">...</b></span>
+  <span class="dato">Validación: <b id="validarTexto">...</b></span>
+</header>
+<main>
+  <aside>
+    <h2>Escenas</h2>
+    <div id="escenas"></div>
+    <h2>Interruptor VALIDAR</h2>
+    <label class="interruptor"><input type="checkbox" id="validar"> Validar calificaciones (0 a 10)</label>
+    <pre class="codigo" id="codigo"></pre>
+    <h2>Vista</h2>
+    <label class="interruptor"><input type="checkbox" id="detalles"> Ver detalles técnicos</label>
+    <button id="presentar">Modo presentación (P)</button>
+    <h2>Pregunta libre</h2>
+    <div class="entrada">
+      <textarea id="pregunta" placeholder="Escribe una pregunta..."></textarea>
+      <button id="enviar">Preguntar</button>
+      <button id="nueva">Nueva conversación</button>
+      <button id="verMemoria">Ver memoria en Atlas</button>
+      <button id="revisar">Revisión previa</button>
+    </div>
+    <div class="teclas">Teclas: 1-7 escenas, V validar, S / N aprobar, P presentación, Esc salir</div>
+  </aside>
+  <section>
+    <div id="estado"></div>
+    <div id="traza"></div>
+  </section>
+</main>
+<button id="salirPresentacion">Salir de presentación (Esc)</button>
+<script src="/app.js"></script>
+</body>
+</html>

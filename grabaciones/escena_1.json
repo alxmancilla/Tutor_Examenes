@@ -1,0 +1,38 @@
+[
+  [
+    "Pregunta",
+    "¿Qué temas vienen en el examen de Biología y qué dice mi apunte de fotosíntesis?",
+    null,
+    false
+  ],
+  [
+    "Llamada a herramienta",
+    "{\n  \"herramienta\": \"ver_calendario\",\n  \"argumentos\": {}\n}",
+    "El modelo solo PIDE la llamada; nuestro programa la ejecuta",
+    true
+  ],
+  [
+    "Llamada a herramienta",
+    "{\n  \"herramienta\": \"buscar_apuntes\",\n  \"argumentos\": {\n    \"pregunta\": \"fotosíntesis\",\n    \"materia\": \"Biología\"\n  }\n}",
+    "El modelo solo PIDE la llamada; nuestro programa la ejecuta",
+    true
+  ],
+  [
+    "Resultado de la herramienta",
+    "[\n  {\n    \"fecha\": \"2026-10-27\",\n    \"dia\": \"martes\",\n    \"materia\": \"Biología\",\n    \"temas\": [\n      \"célula\",\n      \"fotosíntesis\",\n      \"ADN\"\n    ]\n  },\n  {\n    \"fecha\": \"2026-10-29\",\n    \"dia\": \"jueves\",\n    \"materia\": \"Matemáticas\",\n    \"temas\": [\n      \"funciones\",\n      \"ecuaciones cuadráticas\"\n    ]\n  },\n  {\n    \"fecha\": \"2026-10-30\",\n    \"dia\": \"viernes\",\n    \"materia\": \"Historia de México\",\n    \"temas\": [\n      \"Independencia\",\n      \"Revolución\"\n    ]\n  }\n]",
+    "ver_calendario",
+    false
+  ],
+  [
+    "Fragmentos encontrados",
+    "1. La fotosíntesis es el proceso con el que las plantas convierten luz solar, agua y dióxido de carbono en glucosa y oxígeno. Ocurre en los cloroplastos, gracias a la clorofila.\n   Fuente: Apuntes de Biología, unidad 2\n   Similitud: 0.824  |  Relevancia (rerank): 0.932\n\n2. La fotosíntesis tiene dos fases. En la fase luminosa se usa la luz para producir ATP y liberar oxígeno. En la fase oscura, o ciclo de Calvin, se fija el CO2 para formar glucosa.\n   Fuente: Apuntes de Biología, unidad 2\n   Similitud: 0.812  |  Relevancia (rerank): 0.895\n\n3. Las células procariotas no tienen núcleo definido, como las bacterias. Las células eucariotas sí tienen núcleo y organelos, como las de plantas y animales.\n   Fuente: Apuntes de Biología, unidad 1\n   Similitud: 0.608  |  Relevancia (rerank): 0.338",
+    "buscar_apuntes",
+    false
+  ],
+  [
+    "Respuesta",
+    "Tu examen de Biología es el martes 27 de octubre y vienen tres temas: célula, fotosíntesis y ADN.\nSobre la fotosíntesis, tus apuntes dicen que es el proceso con el que las plantas convierten la luz del sol, el agua y el CO2 en glucosa y oxígeno. Pasa en los cloroplastos, gracias a la clorofila (Apuntes de Biología, unidad 2).\nTiene dos fases. En la fase luminosa la planta usa la luz para producir ATP y libera oxígeno. En la fase oscura, también llamada ciclo de Calvin, fija el CO2 para formar glucosa (Apuntes de Biología, unidad 2).\n¿Quieres que también busque en tus apuntes lo de célula y ADN?",
+    null,
+    false
+  ]
+]

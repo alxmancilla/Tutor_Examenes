@@ -1,0 +1,116 @@
+[
+  [
+    "Pregunta",
+    "Me cuesta mucho Matemáticas.",
+    null,
+    false
+  ],
+  [
+    "Respuesta",
+    "Entendido, lo tomaré en cuenta y le daremos más tiempo a Matemáticas en tus planes de estudio. Cuando quieras te ayudo a organizar la semana, a repasar algún tema o a calcular qué calificación necesitas en el final.",
+    null,
+    false
+  ],
+  [
+    "Pregunta",
+    "Organiza mi semana de exámenes",
+    null,
+    false
+  ],
+  [
+    "Memoria",
+    "El agente recuerda lo que dijiste antes en esta conversación:\n- Me cuesta mucho Matemáticas.",
+    "guardado en Atlas: tutor_demo.checkpoints",
+    false
+  ],
+  [
+    "Llamada a herramienta",
+    "{\n  \"herramienta\": \"ver_calendario\",\n  \"argumentos\": {}\n}",
+    "El modelo solo PIDE la llamada; nuestro programa la ejecuta",
+    true
+  ],
+  [
+    "Llamada a herramienta",
+    "{\n  \"herramienta\": \"buscar_apuntes\",\n  \"argumentos\": {\n    \"pregunta\": \"temas principales del examen\",\n    \"materia\": \"Matemáticas\"\n  }\n}",
+    "El modelo solo PIDE la llamada; nuestro programa la ejecuta",
+    true
+  ],
+  [
+    "Llamada a herramienta",
+    "{\n  \"herramienta\": \"buscar_apuntes\",\n  \"argumentos\": {\n    \"pregunta\": \"temas principales del examen\",\n    \"materia\": \"Biología\"\n  }\n}",
+    "El modelo solo PIDE la llamada; nuestro programa la ejecuta",
+    true
+  ],
+  [
+    "Llamada a herramienta",
+    "{\n  \"herramienta\": \"buscar_apuntes\",\n  \"argumentos\": {\n    \"pregunta\": \"temas principales del examen\",\n    \"materia\": \"Historia de México\"\n  }\n}",
+    "El modelo solo PIDE la llamada; nuestro programa la ejecuta",
+    true
+  ],
+  [
+    "Fragmentos encontrados",
+    "1. La Independencia de México inició el 16 de septiembre de 1810 con el Grito de Dolores, encabezado por el cura Miguel Hidalgo. Buscaba terminar con el dominio español.\n   Fuente: Apuntes de Historia, unidad 1\n   Similitud: 0.539  |  Relevancia (rerank): 0.45\n\n2. Emiliano Zapata luchó por la tierra con el lema Tierra y libertad, y Francisco Villa encabezó la División del Norte. La Constitución de 1917 es uno de los resultados de la Revolución.\n   Fuente: Apuntes de Historia, unidad 2\n   Similitud: 0.588  |  Relevancia (rerank): 0.445\n\n3. La Revolución Mexicana comenzó el 20 de noviembre de 1910, convocada por Francisco I. Madero contra la dictadura de Porfirio Díaz. Su lema fue Sufragio efectivo, no reelección.\n   Fuente: Apuntes de Historia, unidad 2\n   Similitud: 0.554  |  Relevancia (rerank): 0.441",
+    "buscar_apuntes",
+    false
+  ],
+  [
+    "Fragmentos encontrados",
+    "1. En el ADN la adenina siempre se une con la timina y la citosina con la guanina. Un gen es un fragmento de ADN que contiene las instrucciones para fabricar una proteína.\n   Fuente: Apuntes de Biología, unidad 3\n   Similitud: 0.593  |  Relevancia (rerank): 0.481\n\n2. El ADN guarda la información genética de los seres vivos. Tiene forma de doble hélice, descrita por Watson y Crick en 1953. Sus bases son adenina, timina, citosina y guanina.\n   Fuente: Apuntes de Biología, unidad 3\n   Similitud: 0.592  |  Relevancia (rerank): 0.476\n\n3. La mitocondria produce energía para la célula en forma de ATP. Por eso se le llama la central energética de la célula. Las células musculares tienen muchas mitocondrias.\n   Fuente: Apuntes de Biología, unidad 1\n   Similitud: 0.543  |  Relevancia (rerank): 0.458",
+    "buscar_apuntes",
+    false
+  ],
+  [
+    "Resultado de la herramienta",
+    "[\n  {\n    \"fecha\": \"2026-10-27\",\n    \"dia\": \"martes\",\n    \"materia\": \"Biología\",\n    \"temas\": [\n      \"célula\",\n      \"fotosíntesis\",\n      \"ADN\"\n    ]\n  },\n  {\n    \"fecha\": \"2026-10-29\",\n    \"dia\": \"jueves\",\n    \"materia\": \"Matemáticas\",\n    \"temas\": [\n      \"funciones\",\n      \"ecuaciones cuadráticas\"\n    ]\n  },\n  {\n    \"fecha\": \"2026-10-30\",\n    \"dia\": \"viernes\",\n    \"materia\": \"Historia de México\",\n    \"temas\": [\n      \"Independencia\",\n      \"Revolución\"\n    ]\n  }\n]",
+    "ver_calendario",
+    false
+  ],
+  [
+    "Fragmentos encontrados",
+    "1. Una ecuación cuadrática tiene la forma ax² + bx + c = 0, con a distinto de cero. Su gráfica es una parábola. Puede tener dos, una o ninguna solución real.\n   Fuente: Apuntes de Matemáticas, unidad 2\n   Similitud: 0.558  |  Relevancia (rerank): 0.451\n\n2. La fórmula general es x = (-b ± √(b² - 4ac)) / 2a. El discriminante b² - 4ac indica cuántas soluciones hay: positivo, dos; cero, una; negativo, ninguna real.\n   Fuente: Apuntes de Matemáticas, unidad 2\n   Similitud: 0.561  |  Relevancia (rerank): 0.414\n\n3. La función lineal tiene la forma y = mx + b. La pendiente m indica qué tan inclinada está la recta y b es el punto donde cruza el eje y.\n   Fuente: Apuntes de Matemáticas, unidad 1\n   Similitud: 0.562  |  Relevancia (rerank): 0.41",
+    "buscar_apuntes",
+    false
+  ],
+  [
+    "Llamada a herramienta",
+    "{\n  \"herramienta\": \"buscar_apuntes\",\n  \"argumentos\": {\n    \"pregunta\": \"fotosíntesis\",\n    \"materia\": \"Biología\"\n  }\n}",
+    "El modelo solo PIDE la llamada; nuestro programa la ejecuta",
+    true
+  ],
+  [
+    "Fragmentos encontrados",
+    "1. La fotosíntesis es el proceso con el que las plantas convierten luz solar, agua y dióxido de carbono en glucosa y oxígeno. Ocurre en los cloroplastos, gracias a la clorofila.\n   Fuente: Apuntes de Biología, unidad 2\n   Similitud: 0.824  |  Relevancia (rerank): 0.932\n\n2. La fotosíntesis tiene dos fases. En la fase luminosa se usa la luz para producir ATP y liberar oxígeno. En la fase oscura, o ciclo de Calvin, se fija el CO2 para formar glucosa.\n   Fuente: Apuntes de Biología, unidad 2\n   Similitud: 0.812  |  Relevancia (rerank): 0.895\n\n3. Las células procariotas no tienen núcleo definido, como las bacterias. Las células eucariotas sí tienen núcleo y organelos, como las de plantas y animales.\n   Fuente: Apuntes de Biología, unidad 1\n   Similitud: 0.608  |  Relevancia (rerank): 0.338",
+    "buscar_apuntes",
+    false
+  ],
+  [
+    "Llamada a herramienta",
+    "{\n  \"herramienta\": \"guardar_plan\",\n  \"argumentos\": {\n    \"plan\": \"Lunes 26: Biología. Célula (mitocondria produce ATP), fotosíntesis en cloroplastos con fase luminosa y ciclo de Calvin, ADN (A-T, C-G). Repaso corto de funciones lineales y = mx + b.\\nMartes 27: Examen de Biología. En la tarde, Matemáticas: funciones lineales y = mx + b.\\nMiércoles 28: Matemáticas todo el día: ecuaciones cuadráticas, fórmula general y discriminante b² - 4ac. Hacer muchos ejercicios.\\nJueves 29: Examen de Matemáticas. En la tarde, Historia: Independencia, 16 sep 1810, Grito de Dolores con Hidalgo.\\nViernes 30: Examen de Historia. Repaso en la mañana: Revolución, 20 nov 1910 con Madero; Zapata, Villa y la Constitución de 1917.\"\n  }\n}",
+    "El modelo solo PIDE la llamada; nuestro programa la ejecuta",
+    true
+  ],
+  [
+    "Aprobación humana",
+    "Lunes 26: Biología. Célula (mitocondria produce ATP), fotosíntesis en cloroplastos con fase luminosa y ciclo de Calvin, ADN (A-T, C-G). Repaso corto de funciones lineales y = mx + b.\nMartes 27: Examen de Biología. En la tarde, Matemáticas: funciones lineales y = mx + b.\nMiércoles 28: Matemáticas todo el día: ecuaciones cuadráticas, fórmula general y discriminante b² - 4ac. Hacer muchos ejercicios.\nJueves 29: Examen de Matemáticas. En la tarde, Historia: Independencia, 16 sep 1810, Grito de Dolores con Hidalgo.\nViernes 30: Examen de Historia. Repaso en la mañana: Revolución, 20 nov 1910 con Madero; Zapata, Villa y la Constitución de 1917.",
+    "guardar_plan espera tu permiso",
+    false
+  ],
+  [
+    "Aprobación humana",
+    "n",
+    "respuesta del estudiante",
+    false
+  ],
+  [
+    "Resultado de la herramienta",
+    "El estudiante rechazó el plan. No se guardó nada.",
+    "guardar_plan",
+    false
+  ],
+  [
+    "Respuesta",
+    "No guardé tu plan porque no aprobaste guardarlo. Así quedaría, con más tiempo para Matemáticas:\nLunes 26: Biología, célula (la mitocondria produce ATP, unidad 1), fotosíntesis en cloroplastos con fase luminosa y ciclo de Calvin (unidad 2) y ADN, donde A se une con T y C con G (unidad 3) (Apuntes de Biología).\nMartes 27: Examen de Biología. En la tarde, funciones lineales y = mx + b (Apuntes de Matemáticas, unidad 1).\nMiércoles 28: Todo el día ecuaciones cuadráticas con la fórmula general; el discriminante b² - 4ac te dice cuántas soluciones hay (Apuntes de Matemáticas, unidad 2).\nJueves 29: Examen de Matemáticas. En la tarde, Independencia: 16 de septiembre de 1810, Grito de Dolores con Hidalgo (Apuntes de Historia, unidad 1).\nViernes 30: Antes del examen de Historia, repasa la Revolución: Madero (1910), Zapata, Villa y la Constitución de 1917 (Apuntes de Historia, unidad 2). Si lo quieres guardado o con cambios, avísame.",
+    null,
+    false
+  ]
+]
