@@ -31,6 +31,48 @@ cp .env.example .env   # y llena las llaves
 5. En **Connect > Drivers** copia la cadena `mongodb+srv://...` y ponla en `MONGODB_URI`.
 6. Llave del AI Gateway: ponla en `AI_GATEWAY_API_KEY`. `ANTHROPIC_BASE_URL` ya viene configurada.
 
+### Correr la demo sin costo (opcional)
+
+La configuración principal usa un clúster de pago (por `$rerank`) y el AI Gateway. Para correrla
+gratis hay que hacer tres ajustes. Revisa los precios y límites vigentes antes de la plática:
+cambian con frecuencia y algunas funciones están en Preview.
+
+| Pieza | Costo | Opción gratuita |
+|---|---|---|
+| Python, LangChain, página web, pruebas | Gratis (código abierto) | Ya es gratis |
+| Clúster de Atlas | De pago (MongoDB 8.3+) | Clúster **M0** gratuito (512 MB, MongoDB 8.0) |
+| Embeddings automáticos (`voyage-4`) | Tokens | 200 millones de tokens gratis por organización (una sola vez) |
+| Reordenamiento (`$rerank`) | Tokens y clúster 8.3+ | **No existe en M0**: hay que quitarlo |
+| Memoria del agente (checkpoints) | Almacenamiento | Funciona en M0 |
+| Claude Opus 5.5 | Por token | Sin nivel gratuito; a través del AI Gateway de tu empresa no pagas tú |
+
+**Pasos:**
+
+1. **Crea un clúster M0 gratuito** en https://cloud.mongodb.com y sigue los pasos de la sección 2,
+   excepto activar Native Reranking (no aplica en M0).
+2. **Agrega un método de pago a la organización.** No genera cobros mientras uses los tokens
+   gratuitos, pero sin tarjeta un M0 solo permite 3 búsquedas por minuto y la escena 4 hace 4
+   búsquedas seguidas, así que se atoraría en el escenario. Con tarjeta, el límite sube a 2,000
+   por minuto. Después de ensayar, revisa la página **Billing** de Atlas para confirmar $0.
+3. **Quita el reordenamiento** en `herramientas.py`. Reemplaza el cuerpo de la función `buscar` por:
+
+   ```python
+   resultados = vector_store(coleccion, campo_texto).similarity_search_with_score(
+       consulta, k=k, pre_filter=filtro)
+   return [(d, round(s, 3), round(s, 3)) for d, s in resultados]
+   ```
+
+   Las tarjetas mostrarán el mismo número en Similitud y Relevancia. En las pruebas, el agua de
+   tamarindo sale primero también sin reordenamiento.
+4. **Modelo:** usa la llave del AI Gateway de tu empresa (`AI_GATEWAY_API_KEY`). Si no tienes acceso
+   a uno, el costo de Claude es por uso: una plática con las 7 escenas cuesta, como estimación,
+   menos de un dólar.
+5. Corre `python seed.py` y luego `python agent.py --revisar`.
+
+**Sin verificar en M0:** que `seed.py` pueda crear los índices desde código (si falla, créalos en
+**Atlas Search** desde la interfaz con las mismas definiciones de `seed.py`) y la velocidad de las
+escenas. Ensaya completo en el clúster gratuito antes de la plática.
+
 ## 3. Cargar los datos
 
 ```bash
