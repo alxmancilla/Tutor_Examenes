@@ -27,14 +27,14 @@ cp .env.example .env   # y llena las llaves
 1. Entra a https://cloud.mongodb.com y crea un clúster con MongoDB 8.3 o más reciente.
 2. En **Project Settings** activa Native Reranking.
 3. En **Database Access** crea un usuario con contraseña.
-4. En **Network Access** agrega tu IP (o la red del lugar de la plática).
+4. En **Network Access** agrega tu IP (o la de la red desde donde vas a correr la demo).
 5. En **Connect > Drivers** copia la cadena `mongodb+srv://...` y ponla en `MONGODB_URI`.
 6. Llave del AI Gateway: ponla en `AI_GATEWAY_API_KEY`. `ANTHROPIC_BASE_URL` ya viene configurada.
 
 ### Correr la demo sin costo (opcional)
 
 La configuración principal usa un clúster de pago (por `$rerank`) y el AI Gateway. Para correrla
-gratis hay que hacer tres ajustes. Revisa los precios y límites vigentes antes de la plática:
+gratis hay que hacer tres ajustes. Revisa los precios y límites vigentes antes de usarla:
 cambian con frecuencia y algunas funciones están en Preview.
 
 | Pieza | Costo | Opción gratuita |
@@ -52,8 +52,8 @@ cambian con frecuencia y algunas funciones están en Preview.
    excepto activar Native Reranking (no aplica en M0).
 2. **Agrega un método de pago a la organización.** No genera cobros mientras uses los tokens
    gratuitos, pero sin tarjeta un M0 solo permite 3 búsquedas por minuto y la escena 4 hace 4
-   búsquedas seguidas, así que se atoraría en el escenario. Con tarjeta, el límite sube a 2,000
-   por minuto. Después de ensayar, revisa la página **Billing** de Atlas para confirmar $0.
+   búsquedas seguidas, así que se atoraría. Con tarjeta, el límite sube a 2,000
+   por minuto. Después de probarla, revisa la página **Billing** de Atlas para confirmar $0.
 3. **Quita el reordenamiento** en `herramientas.py`. Reemplaza el cuerpo de la función `buscar` por:
 
    ```python
@@ -65,13 +65,13 @@ cambian con frecuencia y algunas funciones están en Preview.
    Las tarjetas mostrarán el mismo número en Similitud y Relevancia. En las pruebas, el agua de
    tamarindo sale primero también sin reordenamiento.
 4. **Modelo:** usa la llave del AI Gateway de tu empresa (`AI_GATEWAY_API_KEY`). Si no tienes acceso
-   a uno, el costo de Claude es por uso: una plática con las 7 escenas cuesta, como estimación,
+   a uno, el costo de Claude es por uso: correr las 7 escenas cuesta, como estimación,
    menos de un dólar.
 5. Corre `python seed.py` y luego `python agent.py --revisar`.
 
 **Sin verificar en M0:** que `seed.py` pueda crear los índices desde código (si falla, créalos en
 **Atlas Search** desde la interfaz con las mismas definiciones de `seed.py`) y la velocidad de las
-escenas. Ensaya completo en el clúster gratuito antes de la plática.
+escenas. Pruébala completa en el clúster gratuito antes de usarla.
 
 ## 3. Cargar los datos
 
@@ -105,7 +105,7 @@ python agent.py --revisar
 Muestra OK o ERROR para las variables de entorno, Atlas, una búsqueda real con rerank en
 cada colección y Anthropic.
 
-## 5. Interfaz web (recomendada para la plática)
+## 5. Interfaz web
 
 ```bash
 python web.py            # abre http://localhost:8000 en el navegador
@@ -117,14 +117,11 @@ python web.py            # abre http://localhost:8000 en el navegador
   validación al momento, sin editar archivos.
 - **Aprobación:** en la escena 4 el agente se detiene y aparecen los botones "Sí, guardar" y "No".
 - **Pregunta libre** y **Revisión previa** (la misma de `--revisar`).
-- **Modo presentación (`P`):** oculta el panel de controles, usa un tema claro de alto contraste y
-  letra más grande para el proyector. `Esc` regresa a la vista normal.
 - La escena que corre queda resaltada. La página no se desplaza sola: usa la rueda o las flechas.
 - **Aprobación:** en la escena 4 se abre una ventana al centro con el plan y los botones.
 - En las escenas 2 y 3 aparece una tarjeta con el código de `calificacion_necesaria` y el valor de VALIDAR.
 - Las llamadas y búsquedas seguidas se juntan en una tarjeta con "Ver todo".
-- **Teclas:** `1` a `6` corren las escenas, `V` prende o apaga VALIDAR, `S` / `N` aprueban o rechazan,
-  `P` modo presentación.
+- **Teclas:** `1` a `7` corren las escenas, `V` prende o apaga VALIDAR, `S` / `N` aprueban o rechazan.
 - **Si algo falla**, la tarjeta de error pide revisar la conexión; vuelve a presionar la escena.
 - **Si recargas la página** a mitad de una escena, la página la retoma.
 - La escena 3 prende VALIDAR solo mientras corre y al terminar lo deja como estaba.
@@ -143,13 +140,6 @@ python web.py            # abre http://localhost:8000 en el navegador
 
 Solo escucha en tu computadora (`127.0.0.1`). Usa `--puerto 8080` si el 8000 está ocupado.
 
-### Guion de 3 a 5 minutos
-
-1. Escena 2 con VALIDAR apagado: la herramienta responde -63.50.
-2. Prende VALIDAR y corre la escena 2 otra vez: rechaza el 150.
-3. Escena 4: el agente arma el plan y espera tu permiso. Presiona "Sí, guardar" o "No".
-4. Si sobra tiempo: escena 6 (agua de tamarindo) o escena 5 (no tiene esa información).
-
 ## 6. Escenas en la terminal
 
 | Comando | Qué muestra |
@@ -162,7 +152,7 @@ Solo escucha en tu computadora (`127.0.0.1`). Usa `--puerto 8080` si el 8000 est
 | `python agent.py --escena 6` | Búsqueda semántica: recomienda agua de tamarindo |
 | `python agent.py` | Modo interactivo (escribe `salir` para terminar) |
 
-La escena 3 activa la validación por sí sola. Para mostrarlo en vivo, cambia
+La escena 3 activa la validación por sí sola. Para hacerlo a mano, cambia
 `VALIDAR = False` a `VALIDAR = True` en `herramientas.py` y corre la escena 2 otra vez.
 
 ## 7. Grabar y reproducir (respaldo sin internet)
@@ -179,16 +169,3 @@ python agent.py --reproducir 1          # repite la traza sin llamadas a la red
 ```bash
 pytest -q
 ```
-
-## Lista de ensayo para la plática
-
-- [ ] `python web.py` corriendo y el navegador en pantalla completa, con zoom al 125% o más.
-- [ ] "Revisión previa" en la página muestra todo en OK con la red del lugar.
-- [ ] La IP del lugar está permitida en Network Access de Atlas.
-- [ ] `python seed.py` corrido el mismo día (deja la colección `planes` vacía).
-- [ ] Después de ensayar, presionar **Reiniciar demo** (o `python seed.py --demo`).
-- [ ] Interruptor VALIDAR apagado antes de empezar.
-- [ ] Escenas 2, 4 y 6 corridas una vez en la página con la red del lugar.
-- [ ] En la escena 4, presionar "Sí, guardar" (o "No" para mostrar que no se guarda).
-- [ ] Archivo `.env` cerrado antes de compartir pantalla.
-- [ ] Plan B: si falla la red, en la terminal `python agent.py --reproducir N` sigue disponible.
