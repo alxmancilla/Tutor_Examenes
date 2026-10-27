@@ -37,9 +37,19 @@ cp .env.example .env   # y llena las llaves
 python seed.py
 ```
 
-Borra y vuelve a crear la base `tutor_demo` (apuntes, calendario, reglas, bebidas, planes),
+Borra la base `tutor_demo` completa (datos, índices, planes y memoria) y la vuelve a crear:
 inserta solo texto, crea los índices `autoEmbed` y espera a que Atlas termine de calcular
-los embeddings y las búsquedas funcionen. Se puede correr varias veces.
+los embeddings y las búsquedas funcionen. Tarda alrededor de 2 minutos. Se puede correr varias veces.
+
+### Reiniciar la demo (rápido)
+
+```bash
+python seed.py --demo
+```
+
+Borra solo lo que la demo cambia: los planes guardados y la memoria del agente. No toca los
+apuntes ni los índices, así que tarda menos de un segundo. En la página web, el botón
+**Reiniciar demo** hace lo mismo y además apaga VALIDAR.
 
 En pantalla, cada fragmento muestra dos números: **Similitud** (qué tan cerca está en
 `$vectorSearch`) y **Relevancia** (la calificación del reranker, que decide el orden final).
@@ -85,7 +95,7 @@ python web.py            # abre http://localhost:8000 en el navegador
   - **Ver memoria en Atlas** muestra cuántos documentos hay guardados y qué dijo el estudiante.
   - Atlas borra sola la memoria 24 horas después de guardarla (índice TTL sobre `created_at`).
     Para cambiar el tiempo, edita `MEMORIA_HORAS` en `agent.py` y corre `python seed.py`.
-  - `python seed.py` borra toda la memoria guardada al momento.
+  - `python seed.py`, `python seed.py --demo` o el botón **Reiniciar demo** borran la memoria al momento.
 - **Vista sencilla:** cada tarjeta trae una frase en español sencillo y oculta el JSON y los
   números de similitud. Activa **Ver detalles técnicos** para mostrar los datos completos.
 
@@ -134,6 +144,7 @@ pytest -q
 - [ ] "Revisión previa" en la página muestra todo en OK con la red del lugar.
 - [ ] La IP del lugar está permitida en Network Access de Atlas.
 - [ ] `python seed.py` corrido el mismo día (deja la colección `planes` vacía).
+- [ ] Después de ensayar, presionar **Reiniciar demo** (o `python seed.py --demo`).
 - [ ] Interruptor VALIDAR apagado antes de empezar.
 - [ ] Escenas 2, 4 y 6 corridas una vez en la página con la red del lugar.
 - [ ] En la escena 4, presionar "Sí, guardar" (o "No" para mostrar que no se guarda).

@@ -246,6 +246,18 @@ async function verMemoria() {
   $("traza").appendChild(div);
 }
 
+async function reiniciarDemo() {
+  // Borra planes guardados y memoria en Atlas, y apaga VALIDAR: la demo queda como nueva
+  if (!confirm("¿Reiniciar la demo? Se borran los planes guardados y la memoria del agente.")) return;
+  $("estado").textContent = "Reiniciando...";
+  const r = await api("/api/reiniciar", {});
+  if (r.error) { $("estado").textContent = r.error; return; }
+  $("traza").innerHTML = ""; eventos = []; firma = "";
+  $("detalles").checked = detalles = false;
+  dibujarCodigo(false);
+  $("estado").textContent = `Demo reiniciada: ${r.planes} planes borrados, memoria vacía y VALIDAR apagado.`;
+}
+
 async function nuevaConversacion() {
   const r = await api("/api/nueva", {});
   $("estado").textContent = r.error || "Conversación nueva: el agente ya no recuerda lo anterior.";
@@ -272,6 +284,7 @@ async function iniciar() {
   $("revisar").onclick = revisar;
   $("verMemoria").onclick = verMemoria;
   $("nueva").onclick = nuevaConversacion;
+  $("reiniciar").onclick = reiniciarDemo;
   $("detalles").onchange = (e) => { detalles = e.target.checked; redibujar(); };
   document.addEventListener("keydown", atajos);
   // Si se recargó la página a mitad de una escena, retomarla

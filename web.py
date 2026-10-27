@@ -9,6 +9,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 import agent
 import herramientas
+import seed
 
 CARPETA = os.path.join(os.path.dirname(__file__), "web")
 ARCHIVOS = {"/": ("index.html", "text/html"), "/app.js": ("app.js", "text/javascript")}
@@ -123,12 +124,19 @@ class Manejador(BaseHTTPRequestHandler):
         datos = json.loads(self.rfile.read(largo) or b"{}")
         if self.path == "/api/correr":
             return self.responder(iniciar(datos))
-        if self.path == "/api/nueva":
-            global conversacion
+        if self.path in ("/api/nueva", "/api/reiniciar"):
+            global conversacion, corrida
             if corrida.estado in ("corriendo", "esperando_aprobacion"):
                 return self.responder({"error": "Espera a que termine la escena."})
             conversacion = f"web-libre-{time.time()}"
-            return self.responder({"ok": True})
+            if self.path == "/api/nueva":
+                return self.responder({"ok": True})
+            try:
+                planes = seed.reiniciar_demo()
+            except Exception as e:
+                return self.responder({"error": f"No pude reiniciar ({type(e).__name__}). Revisa la conexión."})
+            herramientas.VALIDAR, corrida = False, Corrida()
+            return self.responder({"ok": True, "planes": planes})
         if self.path == "/api/validar":
             herramientas.VALIDAR = bool(datos.get("valor"))
             return self.responder({"validar": herramientas.VALIDAR})

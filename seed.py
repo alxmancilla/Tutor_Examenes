@@ -1,4 +1,9 @@
-"""Carga los datos de data/*.json en la base tutor_demo y crea los índices autoEmbed."""
+"""Carga los datos de data/*.json en la base tutor_demo y crea los índices autoEmbed.
+
+python seed.py           borra la base completa y la vuelve a crear
+python seed.py --demo    solo borra lo que la demo cambia: planes guardados y memoria (segundos)
+"""
+import argparse
 import json
 import time
 
@@ -6,10 +11,19 @@ from pymongo.errors import OperationFailure
 from pymongo.operations import SearchIndexModel
 from rich.console import Console
 
-from herramientas import MODELO_EMBEDDINGS, bd, buscar
+from herramientas import BD, MODELO_EMBEDDINGS, bd, buscar
 
 consola = Console()
 VECTORIALES = {"apuntes": ("texto", ["materia"]), "bebidas": ("descripcion", [])}
+MEMORIA = ["checkpoints", "checkpoint_writes"]
+
+
+def reiniciar_demo():
+    """Deja la demo como nueva sin tocar los datos ni los índices: borra planes y memoria."""
+    borrados = bd().planes.delete_many({}).deleted_count
+    for nombre in MEMORIA:
+        bd()[nombre].delete_many({})
+    return borrados
 
 
 def cargar(nombre):
@@ -44,13 +58,22 @@ def esperar_indice(coleccion, campo_texto, limite=600):
     raise TimeoutError(f"El índice de {coleccion} no quedó listo")
 
 
+def esperar_sin_indices(limite=120):
+    # Al borrar la base, Atlas tarda unos segundos en quitar los índices de búsqueda
+    inicio = time.time()
+    while time.time() - inicio < limite:
+        if not any(list(bd()[c].list_search_indexes()) for c in VECTORIALES):
+            return
+        time.sleep(3)
+
+
 def main():
+    # Desde cero: se borra la base completa (datos, índices, planes y memoria del agente)
+    consola.print(f"Borrando la base [bold]{BD}[/]...")
+    bd().client.drop_database(BD)
+    esperar_sin_indices()
     for nombre in ["apuntes", "calendario", "reglas", "bebidas", "planes"]:
-        bd().drop_collection(nombre)
         bd().create_collection(nombre)
-    # Memoria del agente: se borra para empezar la plática sin conversaciones viejas
-    for nombre in ["checkpoints", "checkpoint_writes"]:
-        bd().drop_collection(nombre)
     bd().calendario.insert_many(cargar("calendario"))
     bd().reglas.insert_many(cargar("reglas"))
     for coleccion, (campo_texto, filtros) in VECTORIALES.items():
@@ -63,4 +86,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    p = argparse.ArgumentParser(description="Carga o reinicia la base tutor_demo")
+    p.add_argument("--demo", action="store_true", help="solo borra planes guardados y memoria")
+    if p.parse_args().demo:
+        consola.print(f"[bold green]Demo reiniciada: {reiniciar_demo()} planes borrados y memoria vacía.[/]")
+    else:
+        main()
