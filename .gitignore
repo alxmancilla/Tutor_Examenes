@@ -1,4 +1,20 @@
+# Llaves y configuración local
 .env
+.env.*
+!.env.example
+
+# Python
 .venv/
+venv/
 __pycache__/
+*.py[cod]
 .pytest_cache/
+
+# Sistema y editores
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+# Registros
+*.log
