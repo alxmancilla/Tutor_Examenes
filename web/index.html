@@ -25,9 +25,7 @@
     border-bottom:4px solid var(--acento); }
   header h1, .overlay h2 { font-family:var(--serif); font-weight:400; }
   header h1 { margin:0; font-size:34px; }
-  .presentacion aside { display:none; }
-  .presentacion main { grid-template-columns:1fr; max-width:1400px; margin:0 auto; }
-  .presentacion header h1 { font-size:44px; } .presentacion .dato { font-size:22px; }
+
   .presentacion .panel h3 { font-size:30px; } .presentacion .panel .leyenda { font-size:24px; }
   .presentacion .Respuesta pre { font-size:34px; }
   #salirPresentacion { display:none; position:fixed; right:16px; bottom:16px; opacity:.35; font:inherit; font-size:16px;
@@ -35,16 +33,7 @@
   .presentacion #salirPresentacion { display:block; } #salirPresentacion:hover { opacity:1; }
   .dato { color:var(--tenue); font-size:17px; }
   .dato b { color:var(--texto); font-weight:600; }
-  main { display:grid; grid-template-columns:340px 1fr; gap:28px; padding:28px 32px; }
-  aside button, .entrada button { width:100%; text-align:left; margin:0 0 10px; padding:12px 16px; font:inherit;
-    font-size:18px; color:var(--texto); background:var(--tarjeta); border:1px solid var(--borde); border-radius:6px;
-    cursor:pointer; transition:box-shadow .15s, border-color .15s; }
-  aside button:hover { border-color:var(--acento); box-shadow:0 0 0 3px var(--resaltado); }
   aside button:focus-visible, .botones button:focus-visible { outline:none; box-shadow:0 0 0 2px var(--fondo), 0 0 0 4px var(--azul); }
-  aside button:disabled { opacity:.45; cursor:default; box-shadow:none; }
-  aside button.activa { opacity:1; border-color:var(--acento); box-shadow:0 0 0 3px var(--resaltado); }
-  #enviar { background:var(--verde-oscuro); border-color:var(--verde); color:#FFFFFF; text-align:center; font-weight:600; }
-  aside h2 { font-size:13px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--tenue); margin:22px 0 8px; }
   .interruptor { display:flex; align-items:center; gap:12px; font-size:19px; margin:4px 0 10px; cursor:pointer; }
   .interruptor input { width:26px; height:26px; accent-color:var(--verde-oscuro); }
   pre.codigo { background:var(--codigo); padding:12px; border-radius:6px; border:1px solid var(--borde);
@@ -94,41 +83,136 @@
   .tabla td { padding:4px 14px 4px 0; }
   .ok { color:var(--acento); font-weight:600; } .falla { color:var(--rojo); font-weight:600; }
   @keyframes aparece { from { opacity:0; transform:translateY(8px); } }
+
+  /* ===== Diseño tipo chat (ChatGPT / Claude): barra lateral + conversación + caja de mensaje ===== */
+  :root { --fondo:#212121; --lateral:#171717; --tarjeta:#2a2a2a; --burbuja:#303030; --texto:#ECECEC;
+    --tenue:#A8A8A8; --borde:#3a3a3a; --leyenda:#A8A8A8; --codigo:#1a1a1a; --resaltado:#023430; }
+  body.presentacion { --fondo:#FFFFFF; --lateral:#F7F7F8; --tarjeta:#F7F7F8; --burbuja:#F0F0F0; --texto:#0D0D0D;
+    --tenue:#5D5D5D; --borde:#E3E3E3; --leyenda:#5D5D5D; --codigo:#F7F7F8; --resaltado:#C0FAE6; font-size:24px; }
+  html, body { height:100%; }
+  body { font:17px/1.6 var(--sans); }
+  .app { display:grid; grid-template-columns:290px 1fr; height:100vh; }
+  .presentacion .app { grid-template-columns:1fr; }
+  aside { background:var(--lateral); display:flex; flex-direction:column; padding:12px; gap:4px; overflow-y:auto; }
+  .presentacion aside { display:none; }
+  .marca { display:flex; align-items:center; gap:10px; padding:8px 10px 14px; font-weight:600; font-size:18px; }
+  .logo { width:30px; height:30px; border-radius:8px; background:var(--verde-oscuro); color:#fff; display:grid;
+    place-items:center; font-size:15px; font-weight:700; }
+  aside h2 { font-size:12px; font-weight:600; letter-spacing:.04em; text-transform:none; color:var(--tenue); margin:16px 10px 4px; }
+  aside button { width:100%; text-align:left; margin:0; padding:9px 10px; font:inherit; font-size:15px; color:var(--texto);
+    background:transparent; border:0; border-radius:8px; cursor:pointer; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  aside button:hover { background:var(--tarjeta); box-shadow:none; border:0; }
+  aside button.activa { background:var(--burbuja); box-shadow:none; }
+  aside button:disabled { opacity:.45; }
+  #nueva { border:1px solid var(--borde); font-weight:500; margin-bottom:4px; }
+  .ajustes { margin:4px 6px; padding:8px; border-radius:10px; background:var(--tarjeta); }
+  .ajustes summary { cursor:pointer; font-size:14px; color:var(--tenue); padding:2px 4px; }
+  .interruptor { font-size:15px; gap:10px; margin:8px 4px; }
+  .interruptor input { width:20px; height:20px; }
+  pre.codigo { font-size:13px; border-color:var(--borde); }
+  .pie { margin-top:auto; padding:12px 10px 4px; border-top:1px solid var(--borde); font-size:13px; color:var(--tenue); }
+  .pie b { color:var(--texto); font-weight:500; }
+  .teclas { font-size:12px; margin-top:8px; }
+
+  .principal { display:flex; flex-direction:column; height:100vh; min-width:0; }
+  .barra { padding:12px 20px; font-weight:600; font-size:17px; color:var(--texto); border-bottom:1px solid var(--borde); }
+  .barra span { color:var(--tenue); font-weight:400; font-size:14px; margin-left:8px; }
+  .presentacion .barra { font-size:26px; }
+  #chat { flex:1; overflow-y:auto; }
+  .columna { max-width:780px; margin:0 auto; padding:28px 20px 40px; }
+  .presentacion .columna { max-width:1100px; }
+  #estado { color:var(--tenue); font-size:14px; min-height:20px; text-align:center; }
+  #traza { gap:18px; }
+  .bienvenida { text-align:center; margin-top:18vh; color:var(--tenue); }
+  .bienvenida h2 { font-family:var(--serif); font-weight:400; font-size:34px; color:var(--texto); margin:0 0 8px; }
+
+  /* Mensajes */
+  .msg { display:flex; gap:14px; animation:aparece .25s; }
+  .msg.usuario { justify-content:flex-end; }
+  .msg.usuario .texto { background:var(--burbuja); padding:10px 18px; border-radius:20px; max-width:75%; white-space:pre-wrap; }
+  .avatar { flex:none; width:30px; height:30px; border-radius:50%; background:var(--verde-oscuro); color:#fff;
+    display:grid; place-items:center; font-size:13px; font-weight:700; margin-top:2px; }
+  .msg.agente .texto { white-space:pre-wrap; flex:1; min-width:0; }
+  .msg.agente.error .texto { color:var(--rojo); }
+  .presentacion .msg .texto { font-size:30px; line-height:1.45; }
+  .escribiendo span { display:inline-block; width:8px; height:8px; margin:12px 3px 0 0; border-radius:50%;
+    background:var(--tenue); animation:latido 1s infinite; }
+  .escribiendo span:nth-child(2) { animation-delay:.15s; } .escribiendo span:nth-child(3) { animation-delay:.3s; }
+
+  /* Pasos del agente: bloques compactos que se pueden cerrar, como el uso de herramientas en Claude */
+  .paso-bloque { margin-left:44px; background:transparent; border:1px solid var(--borde); border-left:3px solid;
+    border-radius:12px; padding:0; box-shadow:none; animation:aparece .25s; }
+  .paso-bloque summary { list-style:none; cursor:pointer; padding:9px 14px; display:flex; align-items:center; gap:10px;
+    font-size:15px; font-weight:500; color:var(--texto); }
+  .paso-bloque summary::-webkit-details-marker { display:none; }
+  .paso-bloque summary::after { content:"▾"; margin-left:auto; color:var(--tenue); }
+  .paso-bloque:not([open]) summary::after { content:"▸"; }
+  .paso-bloque .cuerpo { padding:0 14px 12px; font-size:15px; }
+  .paso-bloque .cuerpo pre { margin:0; white-space:pre-wrap; font:inherit; color:var(--texto); }
+  .paso-bloque .cuerpo pre.json { font:14px/1.4 var(--mono); }
+  .paso-bloque .cuerpo pre.codigo { font:16px/1.45 var(--mono); }
+  .paso-bloque .leyenda { color:var(--tenue); font-size:14px; margin:0 0 6px; }
+  .paso-bloque details summary { padding:4px 0; font-size:14px; color:var(--azul); }
+  .presentacion .paso-bloque summary { font-size:24px; } .presentacion .paso-bloque .cuerpo { font-size:22px; }
+  .presentacion .paso-bloque .leyenda { font-size:20px; }
+  .paso { min-width:1.5em; height:1.5em; font-size:12px; border-width:1px; }
+  .panel { border-left-width:3px; border-radius:12px; padding:14px 18px; box-shadow:none; }
+  .panel h3 { font-size:17px; }
+
+  /* Caja de mensaje */
+  .compositor { padding:0 20px 18px; }
+  .caja-msg { max-width:780px; margin:0 auto; display:flex; align-items:flex-end; gap:8px; background:var(--burbuja);
+    border:1px solid var(--borde); border-radius:26px; padding:8px 8px 8px 18px; }
+  .presentacion .compositor { display:none; }
+  .caja-msg textarea { flex:1; min-height:0; height:28px; max-height:200px; resize:none; border:0; background:transparent;
+    padding:4px 0; font-size:16px; }
+  .caja-msg textarea:focus { box-shadow:none; }
+  #enviar { flex:none; width:38px; height:38px; border-radius:50%; border:0; background:var(--texto); color:var(--fondo);
+    font-size:18px; font-weight:700; cursor:pointer; text-align:center; padding:0; }
+  #enviar:disabled { opacity:.35; cursor:default; }
+  .nota { text-align:center; color:var(--tenue); font-size:12px; margin-top:8px; }
 </style>
 </head>
 <body>
-<header>
-  <h1>Tutor de exámenes</h1>
-  <span class="dato">Modelo: <b id="modelo">...</b></span>
-  <span class="dato">Límite de pasos: <b id="limite">...</b></span>
-  <span class="dato">Validación: <b id="validarTexto">...</b></span>
-</header>
-<main>
+<div class="app">
   <aside>
+    <div class="marca"><div class="logo">TE</div>Tutor de exámenes</div>
+    <button id="nueva">+ Nueva conversación</button>
     <h2>Escenas</h2>
     <div id="escenas"></div>
-    <h2>Interruptor VALIDAR</h2>
-    <label class="interruptor"><input type="checkbox" id="validar"> Validar calificaciones (0 a 10)</label>
-    <pre class="codigo" id="codigo"></pre>
-    <h2>Vista</h2>
-    <label class="interruptor"><input type="checkbox" id="detalles"> Ver detalles técnicos</label>
+    <h2>Herramientas</h2>
+    <button id="verMemoria">Ver memoria en Atlas</button>
+    <button id="revisar">Revisión previa</button>
+    <button id="reiniciar">Reiniciar demo</button>
     <button id="presentar">Modo presentación (P)</button>
-    <h2>Pregunta libre</h2>
-    <div class="entrada">
-      <textarea id="pregunta" placeholder="Escribe una pregunta..."></textarea>
-      <button id="enviar">Preguntar</button>
-      <button id="nueva">Nueva conversación</button>
-      <button id="verMemoria">Ver memoria en Atlas</button>
-      <button id="revisar">Revisión previa</button>
-      <button id="reiniciar">Reiniciar demo</button>
+    <details class="ajustes">
+      <summary>Ajustes</summary>
+      <label class="interruptor"><input type="checkbox" id="validar"> Validar calificaciones (0 a 10)</label>
+      <pre class="codigo" id="codigo"></pre>
+      <label class="interruptor"><input type="checkbox" id="detalles"> Ver detalles técnicos</label>
+    </details>
+    <div class="pie">
+      Modelo: <b id="modelo">...</b><br>Límite de pasos: <b id="limite">...</b> · Validación: <b id="validarTexto">...</b>
+      <div class="teclas">Teclas: 1-7 escenas, V validar, S / N aprobar, P presentación, Esc salir</div>
     </div>
-    <div class="teclas">Teclas: 1-7 escenas, V validar, S / N aprobar, P presentación, Esc salir</div>
   </aside>
-  <section>
-    <div id="estado"></div>
-    <div id="traza"></div>
-  </section>
-</main>
+  <main class="principal">
+    <div class="barra">Tutor de exámenes<span>tu tutor para la semana de exámenes</span></div>
+    <div id="chat">
+      <div class="columna">
+        <div id="estado"></div>
+        <div id="traza"></div>
+      </div>
+    </div>
+    <div class="compositor">
+      <div class="caja-msg">
+        <textarea id="pregunta" rows="1" placeholder="Pregúntale algo a tu tutor..."></textarea>
+        <button id="enviar" title="Enviar">↑</button>
+      </div>
+      <div class="nota">El tutor responde solo con tus apuntes y tu calendario. Enter envía, Shift+Enter cambia de línea.</div>
+    </div>
+  </main>
+</div>
 <button id="salirPresentacion">Salir de presentación (Esc)</button>
 <script src="/app.js"></script>
 </body>

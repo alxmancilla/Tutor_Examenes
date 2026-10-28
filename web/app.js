@@ -19,6 +19,7 @@ const LEYENDAS = {
 };
 let vistos = 0, sondeo = null, codigo = "", eventos = [], detalles = false;
 let escenaCorriendo = null, estadoActual = "libre", validarActual = false, firma = "", dibujados = 0;
+let previos = [], ultimaLibre = false;  // mensajes anteriores de la conversación libre
 const botonesEscena = {};
 
 async function api(ruta, datos) {
@@ -60,20 +61,47 @@ function sencillo(e) {
   return e.contenido;
 }
 
-function base(titulo, clase, paso) {
+// Títulos cortos de los pasos, como el uso de herramientas en ChatGPT o Claude
+const RESUMEN = {
+  "Llamada a herramienta": "Pidió usar una herramienta", "Fragmentos encontrados": "Buscó en los apuntes",
+  "Resultado de la herramienta": "Resultado de la herramienta", "Aprobación humana": "Esperó tu permiso",
+  "Memoria": "Recordó la conversación",
+};
+
+function mensaje(clase, contenido) {
+  // Burbuja del estudiante o respuesta del agente
   const div = document.createElement("div");
-  div.className = "panel " + clase;
-  div.innerHTML = `<h3>${paso ? `<span class="paso">${paso}</span>` : ""}${texto(titulo)}</h3>` +
-    (LEYENDAS[titulo] ? `<div class="leyenda">${texto(LEYENDAS[titulo])}</div>` : "");
+  div.className = "msg " + clase;
+  div.innerHTML = (clase === "usuario" ? "" : `<div class="avatar">TE</div>`) + `<div class="texto">${texto(contenido)}</div>`;
   return div;
 }
 
+function base(titulo, clase, paso, abierto) {
+  // Paso intermedio: bloque compacto que se abre y se cierra
+  const det = document.createElement("details");
+  det.className = "panel paso-bloque " + clase;
+  if (abierto) det.open = true;
+  det.innerHTML = `<summary>${paso ? `<span class="paso">${paso}</span>` : ""}${texto(titulo)}</summary>` +
+    `<div class="cuerpo">${LEYENDAS[titulo] ? `<div class="leyenda">${texto(LEYENDAS[titulo])}</div>` : ""}</div>`;
+  return det;
+}
+
 function tarjeta(e, paso) {
-  const div = base(e.titulo, CLASES[e.titulo] || "Resultado", paso);
+  if (e.titulo === "Pregunta") return mensaje("usuario", e.contenido);
+  if (e.titulo === "Respuesta") return mensaje("agente", e.contenido);
+  if (e.titulo === "Error") return mensaje("agente error", e.contenido);
+  let titulo = RESUMEN[e.titulo] || e.titulo;
+  if (e.titulo === "Llamada a herramienta") {
+    try { titulo = `Pidió usar ${JSON.parse(e.contenido).herramienta}`; } catch (_) { /* título genérico */ }
+  } else if (e.subtitulo && e.titulo !== "Aprobación humana" && e.titulo !== "Memoria") {
+    titulo += ` · ${e.subtitulo}`;
+  }
+  const det = base(titulo, CLASES[e.titulo] || "Resultado", paso, true);
   const crudo = detalles && e.es_json;
-  div.insertAdjacentHTML("beforeend", `<pre class="${crudo ? "json" : ""}">${texto(detalles ? e.contenido : sencillo(e))}</pre>` +
+  det.querySelector(".cuerpo").insertAdjacentHTML("beforeend",
+    `<pre class="${crudo ? "json" : ""}">${texto(detalles ? e.contenido : sencillo(e))}</pre>` +
     (detalles && e.subtitulo ? `<div class="sub">${texto(e.subtitulo)}</div>` : ""));
-  return div;
+  return det;
 }
 
 function agrupar(lista) {
@@ -91,46 +119,71 @@ function agrupar(lista) {
 function tarjetaGrupo(grupo, paso) {
   if (grupo.length === 1) return tarjeta(grupo[0], paso);
   const e = grupo[0];
-  const div = base(e.titulo, CLASES[e.titulo], paso);
-  let resumen;
+  let titulo, resumen;
   if (e.titulo === "Llamada a herramienta") {
-    resumen = `El modelo pidió ${grupo.length} herramientas:\n` +
-      grupo.map((x) => "- " + sencillo(x).replace("El modelo pidió: ", "").replace("\n", ": ")).join("\n");
+    titulo = `Pidió ${grupo.length} herramientas`;
+    resumen = grupo.map((x) => "- " + sencillo(x).replace("El modelo pidió: ", "").replace("\n", ": ")).join("\n");
   } else {
     const fuentes = [...new Set(grupo.flatMap((x) => x.contenido.split("\n")
       .filter((l) => l.includes("Fuente:")).map((l) => l.split("Fuente:")[1].trim())))];
-    resumen = `Hizo ${grupo.length} búsquedas en los apuntes. Usó estas fuentes:\n` + fuentes.map((f) => "- " + f).join("\n");
+    titulo = `Hizo ${grupo.length} búsquedas en los apuntes`;
+    resumen = "Fuentes:\n" + fuentes.map((f) => "- " + f).join("\n");
   }
-  div.insertAdjacentHTML("beforeend", `<pre>${texto(resumen)}</pre><details><summary>Ver todo</summary>` +
-    `<pre>${texto(grupo.map(sencillo).join("\n\n"))}</pre></details>`);
-  return div;
+  const det = base(titulo, CLASES[e.titulo], paso, true);
+  det.querySelector(".cuerpo").insertAdjacentHTML("beforeend", `<div class="leyenda">${texto(LEYENDAS[e.titulo])}</div>` +
+    `<pre>${texto(resumen)}</pre><details><summary>Ver todo</summary><pre>${texto(grupo.map(sencillo).join("\n\n"))}</pre></details>`);
+  return det;
 }
 
 function tarjetaCodigo() {
   // En las escenas 2 y 3 el público ve el código que cambia el interruptor VALIDAR
-  const div = base(`Nuestro código: VALIDAR = ${validarActual ? "True" : "False"}`, "Codigo");
-  div.insertAdjacentHTML("beforeend", `<div class="leyenda">${validarActual
+  const det = base(`Nuestro código: VALIDAR = ${validarActual ? "True" : "False"}`, "Codigo", null, true);
+  det.querySelector(".cuerpo").insertAdjacentHTML("beforeend", `<div class="leyenda">${validarActual
     ? "La validación está prendida: el programa revisa que las calificaciones estén entre 0 y 10."
     : "La validación está apagada: el programa calcula con cualquier número."}</div><pre class="codigo">${codigoHtml()}</pre>`);
+  return det;
+}
+
+function bienvenida() {
+  const div = document.createElement("div");
+  div.className = "bienvenida";
+  div.innerHTML = "<h2>¿En qué te ayudo esta semana?</h2>Elige una escena a la izquierda o escribe tu pregunta abajo.";
   return div;
 }
 
 function dibujar() {
   const traza = $("traza");
+  // Los bloques que el presentador abrió o cerró se quedan así al redibujar
+  const estadoAbierto = [...traza.querySelectorAll("details.paso-bloque")].map((d) => d.open);
   traza.innerHTML = "";
+  const todos = previos.concat(eventos);
+  if (!todos.length && estadoActual !== "corriendo") { traza.appendChild(bienvenida()); return; }
   if (escenaCorriendo === 2 || escenaCorriendo === 3) traza.appendChild(tarjetaCodigo());
-  const grupos = agrupar(eventos);
+  const grupos = agrupar(todos);
+  let paso = 0;  // solo se numeran los pasos del agente, no los mensajes
   grupos.forEach((g, i) => {
-    const t = tarjetaGrupo(g, i + 1);
+    const esMensaje = ["Pregunta", "Respuesta", "Error"].includes(g[0].titulo);
+    if (g[0].titulo === "Pregunta") paso = 0;
+    const t = tarjetaGrupo(g, esMensaje ? null : ++paso);
     if (i >= dibujados) t.classList.add("nuevo");
     traza.appendChild(t);
   });
+  [...traza.querySelectorAll("details.paso-bloque")].forEach((d, i) => {
+    if (i < estadoAbierto.length) d.open = estadoAbierto[i];
+  });
   dibujados = grupos.length;
   if (estadoActual === "corriendo") {
-    const p = base("", "Pensando");
-    p.innerHTML = "<h3>Pensando<span class='puntos'>...</span></h3>";
+    const p = document.createElement("div");
+    p.className = "msg agente";
+    p.innerHTML = `<div class="avatar">TE</div><div class="escribiendo"><span></span><span></span><span></span></div>`;
     traza.appendChild(p);
   }
+}
+
+function limpiar() {
+  $("traza").innerHTML = "";
+  eventos = []; previos = []; ultimaLibre = false;
+  firma = ""; dibujados = 0; estadoActual = "libre"; escenaCorriendo = null;
 }
 
 function redibujar() { dibujados = 0; dibujar(); }
@@ -156,6 +209,7 @@ async function decidir(decision) {
 
 function bloquear(si) {
   document.querySelectorAll("aside button").forEach((b) => (b.disabled = si));
+  $("enviar").disabled = si;
   if (!si) Object.values(botonesEscena).forEach((b) => b.classList.remove("activa"));
 }
 
@@ -191,6 +245,10 @@ async function correr(datos) {
   const r = await api("/api/correr", datos);
   if (r.error) { $("estado").textContent = r.error; return; }
   $("estado").textContent = "";
+  // La pregunta libre sigue la misma conversación: los mensajes anteriores se quedan en pantalla
+  const libre = !datos.escena;
+  previos = libre && ultimaLibre ? previos.concat(eventos) : [];
+  ultimaLibre = libre;
   vistos = 0;
   eventos = [];
   firma = "";
@@ -216,10 +274,23 @@ function atajos(e) {
 
 function sondeo_activo() { return document.querySelector("aside button")?.disabled; }
 
+function enviarPregunta() {
+  const pregunta = $("pregunta").value.trim();
+  if (!pregunta || sondeo_activo()) return;
+  $("pregunta").value = "";
+  crecer();
+  correr({ pregunta });
+}
+
+function crecer() {
+  // La caja de mensaje crece con el texto, como en ChatGPT
+  const t = $("pregunta");
+  t.style.height = "auto";
+  t.style.height = Math.min(t.scrollHeight, 200) + "px";
+}
+
 async function revisar() {
-  $("traza").innerHTML = "";
-  eventos = [];
-  firma = "";
+  limpiar();
   $("estado").textContent = "Revisando conexiones...";
   const filas = await api("/api/revisar");
   const div = document.createElement("div");
@@ -232,9 +303,8 @@ async function revisar() {
 
 async function verMemoria() {
   // Muestra lo que Atlas tiene guardado de la conversación libre
-  $("traza").innerHTML = "";
-  eventos = [];
-  firma = "";
+  limpiar();
+  $("estado").textContent = "";
   const m = await api("/api/memoria");
   const div = document.createElement("div");
   div.className = "panel Memoria";
@@ -252,7 +322,8 @@ async function reiniciarDemo() {
   $("estado").textContent = "Reiniciando...";
   const r = await api("/api/reiniciar", {});
   if (r.error) { $("estado").textContent = r.error; return; }
-  $("traza").innerHTML = ""; eventos = []; firma = "";
+  limpiar();
+  dibujar();
   $("detalles").checked = detalles = false;
   dibujarCodigo(false);
   $("estado").textContent = `Demo reiniciada: ${r.planes} planes borrados, memoria vacía y VALIDAR apagado.`;
@@ -261,7 +332,7 @@ async function reiniciarDemo() {
 async function nuevaConversacion() {
   const r = await api("/api/nueva", {});
   $("estado").textContent = r.error || "Conversación nueva: el agente ya no recuerda lo anterior.";
-  if (!r.error) { $("traza").innerHTML = ""; eventos = []; firma = ""; }
+  if (!r.error) { limpiar(); dibujar(); }
 }
 
 async function iniciar() {
@@ -280,7 +351,11 @@ async function iniciar() {
   $("presentar").onclick = () => presentar(true);
   $("salirPresentacion").onclick = () => presentar(false);
   $("validar").onchange = async (e) => dibujarCodigo((await api("/api/validar", { valor: e.target.checked })).validar);
-  $("enviar").onclick = () => correr({ pregunta: $("pregunta").value });
+  $("enviar").onclick = enviarPregunta;
+  $("pregunta").addEventListener("input", crecer);
+  $("pregunta").addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); enviarPregunta(); }
+  });
   $("revisar").onclick = revisar;
   $("verMemoria").onclick = verMemoria;
   $("nueva").onclick = nuevaConversacion;
@@ -290,6 +365,7 @@ async function iniciar() {
   // Si se recargó la página a mitad de una escena, retomarla
   const actual = await api("/api/eventos?desde=0");
   if (actual.estado === "corriendo" || actual.estado === "esperando_aprobacion") empezarSondeo();
+  else dibujar();
 }
 
 iniciar();
